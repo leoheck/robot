@@ -1,16 +1,15 @@
 
-#include "VirtualWire.h"
-#include "RawCar.h"
+#include "Wheels.h"
 
 // Motor pins
 #define M1_ENABLE_PIN  5 // Pino  1 da Ponte-H
-#define M1_POLE_A_PIN 11 // Pino  2 da Ponte-H
-#define M1_POLE_B_PIN 12 // Pino  7 da Ponte-H
+#define M1_TERM_A_PIN 11 // Pino  2 da Ponte-H
+#define M1_TERM_B_PIN 12 // Pino  7 da Ponte-H
 #define M2_ENABLE_PIN  6 // Pino  9 da Ponte-H
-#define M2_POLE_A_PIN 10 // Pino 10 da Ponte-H
-#define M2_POLE_B_PIN  8 // Pino 15 da Ponte-H
+#define M2_TERM_A_PIN 10 // Pino 10 da Ponte-H
+#define M2_TERM_B_PIN  8 // Pino 15 da Ponte-H
 
-// Keyboard codes 
+// Keyboard codes
 #define left_arrow  28
 #define up_arrow    30
 #define right_arrow 29
@@ -40,11 +39,11 @@ int motors_on_sense_pin = 4;
 int serial_command;
 int operational_mode = MANUAL_MODE;
 
-RawCar car(M1_ENABLE_PIN, M1_POLE_A_PIN, M1_POLE_B_PIN, M2_ENABLE_PIN, M2_POLE_A_PIN, M2_POLE_B_PIN);
+Wheels car(M1_ENABLE_PIN, M1_TERM_A_PIN, M1_TERM_B_PIN, M2_ENABLE_PIN, M2_TERM_A_PIN, M2_TERM_B_PIN);
 
 void setup()
 {
-	Serial.begin(230400);
+	Serial.begin(9600);
 	Serial.println(" ");
 	Serial.println(" ");
 	Serial.println(" ");
@@ -53,17 +52,11 @@ void setup()
 	Serial.println("+-----------------------------------------------------------+");
 	show_commands();
 
-	// Configura o modulo RF
-	vw_set_rx_pin(3);
-	vw_setup(2000);
-	vw_rx_start();
-
-
 	// Pino para verificar se os motor esta ligado
 	//pinMode(motors_on_sense_pin, INPUT);
 }
 
-void loop() 
+void loop()
 {
 	uint8_t rx_buffer [VW_MAX_MESSAGE_LEN];
 	uint8_t buflen = VW_MAX_MESSAGE_LEN;
@@ -90,22 +83,22 @@ void loop()
 		{
 			case up_arrow:
 				Serial.println("#> Forward");
-				car.run(RAWCAR_DIR_FORWARD);
+				car.run(Wheels_DIR_FORWARD);
 				break;
 
 			case down_arrow:
 				Serial.println("#> Backward");
-				car.run(RAWCAR_DIR_BACKWARD);
+				car.run(Wheels_DIR_BACKWARD);
 				break;
 
 			case left_arrow:
 				Serial.println("#> Left");
-				car.turn(RAWCAR_SIDE_LEFT);
+				car.turn(Wheels_SIDE_LEFT);
 				break;
 
 			case right_arrow:
 				Serial.println("#> Right");
-				car.turn(RAWCAR_SIDE_RIGHT);
+				car.turn(Wheels_SIDE_RIGHT);
 				break;
 
 			case space_key:
@@ -222,19 +215,19 @@ void show_debug()
 	//switch(car.get_direction())
 	switch(1)
 	{
-		case RAWCAR_DIR_FORWARD:
+		case Wheels_DIR_FORWARD:
 			Serial.println("Running FORWARD");
 			break;
-		case RAWCAR_DIR_BACKWARD:
+		case Wheels_DIR_BACKWARD:
 			Serial.println("Running BACKWARD");
 			break;
-		case RAWCAR_SIDE_LEFT:
+		case Wheels_SIDE_LEFT:
 			Serial.println("Turning LEFT");
 			break;
-		case RAWCAR_SIDE_RIGHT:
+		case Wheels_SIDE_RIGHT:
 			Serial.println("Turning RIGHT");
 			break;
-		case RAWCAR_STOPPED:
+		case Wheels_STOPPED:
 			Serial.println("Stopped");
 			break;
 	}
