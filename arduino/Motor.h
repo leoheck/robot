@@ -1,5 +1,5 @@
 
-/* 
+/*
 ** Motor.h - Library for control DC motors.
 ** Created by Leandro S. Heck, October, 2 2012
 */
@@ -9,34 +9,38 @@
 
 #include "Arduino.h"
 
-#define MOTOR_DIRECTION_FORWARD 0 
-#define MOTOR_DIRECTION_BACKWARD 1
-
-#define MOTOR_SPEED_MIN 0 
+#define MOTOR_SPEED_MIN 0
 #define MOTOR_SPEED_MAX 255
 
-#define MOTOR_SPEED_DECR 0
-#define MOTOR_SPEED_INCR 1 
+enum MotorDirT
+{
+	Left,
+	Right,
+	None
+};
 
 class Motor
 {
 	public:
-		Motor(int enable_pin, int cmd_a_pin, int cmd_b_pin);
+
+		Motor(int enable_pin, int term_a_pin, int term_b_pin);
 		void stop();
-		void run(bool direction);
+		void turn(MotorDirT direction);
 		void set_speed(int speed);
-		void set_speed_percentual(float speed);
-		void speed_incr(bool do_increment);
+		void set_speed_percent(float speed);
+		void incr_speed(int incr);
 		int get_speed();
-		float get_speed_percentual();
-		int get_direction();
+		float get_speed_percent();
+		int get_dir();
 
 	private:
+
 		int enable_pin;
-		int cmd_a_pin;
-		int cmd_b_pin;
+		int term_a_pin;
+		int term_b_pin;
+
+		MotorDirT direction;
 		int speed;
-		int direction;
 };
 
 #endif

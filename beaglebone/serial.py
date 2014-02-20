@@ -5,10 +5,6 @@
 import Adafruit_BBIO.UART as UART
 import serial
 
-
-ser = serial.Serial('/dev/ttyS1', 19200, timeout=1)
-UART.setup("UART1")
-
 ser = serial.Serial("/dev/ttyO1", 9600)
 ser.open()
 
