@@ -6,13 +6,15 @@ import Adafruit_BBIO.UART as UART
 import serial
 
 ser = serial.Serial("/dev/ttyO1", 9600)
-ser.open()
+ser.close()
 
+ser.open()
 if ser.isOpen():
 	print "Serial is open!"
 	ser.write("Hello World!")
 
 ser.close()
+print "Serial closed!"
 
 
 
