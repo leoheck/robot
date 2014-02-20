@@ -10,7 +10,7 @@ ser.open()
 
 if ser.isOpen():
 	print "Serial is open!"
-    ser.write("Hello World!")
+	ser.write("Hello World!")
 
 ser.close()
 
