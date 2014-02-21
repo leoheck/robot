@@ -20,18 +20,18 @@
 #define v_key 118
 #define q_key 113
 #define space 32
-#define minus 60
+#define minus 45
 #define equal 61
 
 // Robot commands
-#define left_cmd  a_key
-#define up_cmd    w_key
-#define right_cmd d_key
-#define down_cmd  s_key
-#define stop_cmd  space
-#define debug_cmd x_key
-#define decr_speed_cmd minus
-#define incr_speed_cmd equal
+#define move_left_cmd     a_key
+#define move_forward_cmd  w_key
+#define move_right_cmd    d_key
+#define move_backward_cmd s_key
+#define break_cmd         space
+#define decr_speed_cmd    minus
+#define incr_speed_cmd    equal
+#define debug_cmd         x_key
 
 int serial_command = 0;
 
@@ -74,74 +74,65 @@ void setup()
 
 void loop()
 {
-  // Para cada commando serial
-  while(Serial.available() > 0)
-  {
-  	serial_command = Serial.read();
-  	Serial.print("[ARDUINO] Received command: ")
-    Serial.println(serial_command , DEC);
-
-    // Decodifica os valores
-    switch(serial_command)
-    {
-      // Move forward
-    case up_cmd:
-      {
-        Serial.println("#> Forward");
-        move_forward();
-        break;
-      }
-
-      // Move backward
-    case down_cmd:
-      {
-        Serial.println("#> Backward");
-        move_backward();
-        break;
-      }
-
-      // Turn left
-    case left_cmd:
-      {
-        Serial.println("#> Left");
-        turn_left();
-        break;
-      }
-
-      // Turn right
-    case right_cmd:
-      {
-        Serial.println("#> Right");
-        turn_right();
-        break;
-      }
-
-      // Break
-    case stop_cmd:
-      {
-        Serial.println("#> Stop");
-        stop();
-        break;
-      }
-
-    case decr_speed_cmd:
-      {
-        speed_down();
-        break;
-      }
-
-    case incr_speed_cmd:
-      {
-        speed_up();
-        break;
-      }
-
-    case debug_cmd:
+	// Para cada commando serial
+	while(Serial.available() > 0)
 	{
-		debug_motors();
-		break;
+		serial_command = Serial.read();
+		Serial.print("[ARDUINO] Received command: ");
+		Serial.println(serial_command , DEC);
+
+		// Decodifica os valores
+		switch(serial_command)
+		{
+			case move_forward_cmd: {
+				Serial.println("[ARDUINO] Moving forward...");
+				move_forward();
+				break;
+			}
+
+			case move_backward_cmd: {
+				Serial.println("[ARDUINO] Moving backward...");
+				move_backward();
+				break;
+			}
+
+			case move_left_cmd: {
+				Serial.println("[ARDUINO] Turing left");
+				turn_left();
+				break;
+			}
+
+			case move_right_cmd: {
+				Serial.println("[ARDUINO] Turning right");
+				turn_right();
+				break;
+			}
+
+			case break_cmd: {
+				Serial.println("[ARDUINO] Breaking");
+				stop();
+				break;
+			}
+
+			case decr_speed_cmd: {
+				Serial.println("[ARDUINO] Decreasing speed: ");
+				speed_down();
+				break;
+			}
+
+			case incr_speed_cmd: {
+				Serial.println("[ARDUINO] Increasing speed: ");
+				speed_up();
+				break;
+			}
+
+			case debug_cmd: {
+				Serial.println("[ARDUINO] Stop");
+				//debug_motors();
+				break;
+			}
+		}
 	}
-  }
 }
 
 // Show motor pin states
@@ -237,7 +228,7 @@ void speed_up()
 		m2_speed = m2_speed + 1;
 		if(m1_speed < 0) m1_speed = 0;
 		if(m2_speed < 0) m2_speed = 0;
-		Serial.print("#> Increasing speed: ");
+		Serial.print("[ARDUINO] Increasing speed: ");
 		Serial.print(((float)m1_speed * 100) / 255);
 		Serial.print("% [");
 		Serial.print(m1_speed);
@@ -255,7 +246,7 @@ void speed_down()
 		m2_speed = m2_speed - 1;
 		if(m1_speed < 0) m1_speed = 0;
 		if(m2_speed < 0) m2_speed = 0;
-		Serial.print("#> Decreasing speed: ");
+		Serial.print("[ARDUINO] Decreasing speed: ");
 		Serial.print(((float) m1_speed * 100) / 255);
 		Serial.print("% [");
 		Serial.print(m1_speed);
