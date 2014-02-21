@@ -20,9 +20,6 @@ print
 ser.open()
 if ser.isOpen():
 	print ser.readline().strip('\n')
-	print ser.readline().strip('\n')
-	print ser.readline().strip('\n')
-	print ser.readline().strip('\n')
 	
 	ser.write("x") # print debug
 	print
