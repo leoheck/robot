@@ -1,0 +1,21 @@
+// Arduino PINS definition file 
+
+// DC Motors using H-Bridge (3 pins each)
+http://www.ebay.com/itm/L298N-Dual-H-Bridge-DC-stepper-Motor-Driver-Controller-module-Board-for-Arduino-/201037238860
+//---------------------------------------
+
+// MOTOR 1
+#define M1_ENABLE_PIN  5 // Pino  1 da Ponte-H
+#define M1_TERM_A_PIN 11 // Pino  2 da Ponte-H
+#define M1_TERM_B_PIN 12 // Pino  7 da Ponte-H
+
+// MOTOR 2
+#define M2_ENABLE_PIN  6 // Pino  9 da Ponte-H
+#define M2_TERM_A_PIN 10 // Pino 10 da Ponte-H
+#define M2_TERM_B_PIN  8 // Pino 15 da Ponte-H
+
+// Ultrasonic HC-SR04 sensor (2 pins each)
+// Manual: http://users.ece.utexas.edu/~valvano/Datasheets/HCSR04b.pdf
+//--------------------------------------------------------------------
+S1_TRIG
+S1_ECHO
