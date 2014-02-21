@@ -1,5 +1,16 @@
 // Arduino PINS definition file 
 // Leandro Sehnem Heck
+// Pins for arduino nano
+
+// Digital pins labels
+//enum DPINS { D0=2, D1=1, D2=5, D3=6, D4=7, D5=8, D6=9, D7=10, D8=11, D9=12, D10=13, D11=14, D12=15, D13=16 };
+//enum APINS { A0=19, A1=20, A2=21, A3=22, A4=23, A5=24, A6=25, A7=26};
+
+
+// SERIAL
+//-----------------------------------------------------
+#define SERIAL_TXD 1
+#define SERIAL_RXD 2
 
 
 // DC Motors using H-Bridge (3 pins each)
