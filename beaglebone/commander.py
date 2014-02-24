@@ -53,12 +53,34 @@ serial_port = "/dev/ttyO1"
 ser = serial.Serial(serial_port, serial_baudrate)
 ser.close()
 
+
+led_pin = "P8_10"
+GPIO.setup(led_pin, GPIO.OUT)
+GPIO.output(led_pin, GPIO.LOW)
+print "GPIO only run with ROOT"
+print "Using", led_pin, "as reset pin"
+
+
+rst_pin = "P8_9"
+GPIO.setup(rst_pin, GPIO.OUT)
+GPIO.output(rst_pin, GPIO.LOW)
+print "GPIO only run with ROOT"
+print "Using", rst_pin, "as reset pin"
+
+
 print
 print "Serial port:",  serial_port
 print "Baudrate:", serial_baudrate
 print "Hit q to quit"
 print "Please reseting arduino nano now!"
 print 
+
+# Reset arduino to start again
+GPIO.output(rst_pin, GPIO.HIGH)
+time.sleep(0.5)
+
+# Turn of led when arduino is ready
+GPIO.output(led_pin, GPIO.HIGH)
 
 ser.open()
 
@@ -80,6 +102,10 @@ if ser.isOpen():
                         		ser.write(key)
 
 ser.close()
+
+
+
+
 
 # Eventually, you'll want to clean up, but leave this commented for now,
 # as it doesn't work yet
