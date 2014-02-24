@@ -3,6 +3,8 @@ Robot
 
 Simple robot using a Beagle Bone Black and Arduino Nano.
 
+![](https://raw2.github.com/leoheck/robot/master/docs/Serial%20Connection.png)
+![](https://raw2.github.com/leoheck/robot/master/docs/Sensor%20Connection.png)
 
 Beaglebone Black Configuration
 ==============================
