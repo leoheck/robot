@@ -29,6 +29,10 @@ else:
 			ch = sys.stdin.read(1)
 		finally:
 			termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+
+		if ch == "q":
+			exit(0)
+
 		return ch
 
 serial_baudrate = 230400
@@ -37,6 +41,7 @@ serial_port = "/dev/ttyO1"
 ser = serial.Serial(serial_port, serial_baudrate)
 ser.close()
 
+print
 
 led_pin = "P8_10"
 GPIO.setup(led_pin, GPIO.OUT)
@@ -56,7 +61,8 @@ print
 print "Serial port:",  serial_port
 print "Baudrate:", serial_baudrate
 print "Hit q to quit"
-print "Please RESET arduino nano now!"
+#print "Please RESET arduino nano now!"
+print "Automatic Arduino RESET"
 print
 
 # Reset arduino to start again
@@ -81,11 +87,11 @@ while True:
 			print resp,
 			resp = ""
 			if ser.inWaiting() <= 0:
-			ser.flush();
-			print "\n#> ",
-			key = getch()
-			print key
-			ser.write(key)
+				ser.flush();
+				print "\n#> ",
+				key = getch()
+				print key
+				ser.write(key)
 
 ser.close()
 

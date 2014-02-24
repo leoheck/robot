@@ -5,6 +5,7 @@
 #define M1_EN_PIN  5 // Pino  1 da Ponte-H
 #define M1_A1_PIN 11 // Pino  2 da Ponte-H
 #define M1_A2_PIN 12 // Pino  7 da Ponte-H
+
 #define M2_EN_PIN  6 // Pino 9 da Ponte-H
 #define M2_A1_PIN 10 // Pino 10 da Ponte-H
 #define M2_A2_PIN  8 // Pino 15 da Ponte-H
@@ -36,12 +37,12 @@
 int serial_command = 0;
 
 // M1 initial conditions
-int m1_speed = 50;
+int m1_speed = 90;
 bool m1_a1 = LOW;
 bool m1_a2 = LOW;
 
 // M2 initial conditions
-int m2_speed = 50;
+int m2_speed = 90;
 bool m2_a1 = LOW;
 bool m2_a2 = LOW;
 
