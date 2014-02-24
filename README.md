@@ -1,7 +1,7 @@
 Robot
 =====
 
-Simple robot using a Beagle Bone Balck and an Arduino Nano.
+Simple robot using a Beagle Bone Black and Arduino Nano.
 
 Beaglebone Black Configuration
 ==============================
@@ -17,3 +17,6 @@ Arduino Nano
 1. Configuracao
 2. Conecao
 3. ....
+
+Programming Arduino from Commandline
+------------------------------------
