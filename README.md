@@ -1,10 +1,12 @@
 Robot
 =====
 
-Simple robot using a Beagle Bone Balck and an Arduino Nano.
+Simple robot using a Beagle Bone Black and Arduino Nano.
 
 Beaglebone Black Configuration
 ==============================
+
+![](https://raw2.github.com/leoheck/robot/master/docs/Diagrams/Beaglebone%20Black%20Pinout.png)
 
 1. Startup scripts
 2. Wifi setup
@@ -14,6 +16,19 @@ Beaglebone Black Configuration
 Arduino Nano
 ============
 
+![](https://raw2.github.com/leoheck/robot/master/docs/Diagrams/Arduino%20Nano%20Pinout.png)
+
 1. Configuracao
 2. Conecao
 3. ....
+
+Connections
+===========
+
+Serial connection
+
+![](https://raw2.github.com/leoheck/robot/master/docs/Serial%20Connection.png)
+
+Sensors/Actuators connection
+
+![](https://raw2.github.com/leoheck/robot/master/docs/Sensor%20Connection.png)

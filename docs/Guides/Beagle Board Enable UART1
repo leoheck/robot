@@ -1,0 +1,5 @@
+
+sudo su
+cd /sys/devices/bone_capemgr.*
+echo BB-UART1 > slots
+cat slots
