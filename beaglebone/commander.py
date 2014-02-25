@@ -3,12 +3,17 @@
 # Beaglebone PINS: http://beagleboard.org/Support/bone101
 # FIX : https://github.com/adafruit/adafruit-beaglebone-io-python/issues/34
 
+import os
 import sys
 import time
 import serial
 
 import Adafruit_BBIO.UART as UART
 import Adafruit_BBIO.GPIO as GPIO
+
+# if not root... kick out
+if not os.geteuid()==0:
+	sys.exit("\nMust have ROOT powers to use GPIO\n")
 
 try:
     import tty, termios
@@ -41,20 +46,21 @@ serial_port = "/dev/ttyO1"
 ser = serial.Serial(serial_port, serial_baudrate)
 ser.close()
 
-print
+
 
 led_pin = "P8_10"
 GPIO.setup(led_pin, GPIO.OUT)
 GPIO.output(led_pin, GPIO.LOW)
+print
 print "GPIO only run with ROOT"
-print "Using", led_pin, "as reset pin"
-
+print "Using", led_pin, "as led"
 
 rst_pin = "P8_9"
 GPIO.setup(rst_pin, GPIO.OUT)
 GPIO.output(rst_pin, GPIO.LOW)
-print "GPIO only run with ROOT"
-print "Using", rst_pin, "as reset pin"
+print
+#print "GPIO only run with ROOT"
+print "Using", rst_pin, "as arduino reset"
 
 
 print
