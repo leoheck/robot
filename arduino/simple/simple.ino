@@ -1,48 +1,77 @@
 
-// Teste simples para controle pela porta serial
+// Simple sketch to test: serial comunication, motor and sensors connection
+// Leandro Sehnem Heck
 
-// Motor pins
-#define M1_EN_PIN  5 // Pino  1 da Ponte-H
-#define M1_A1_PIN 11 // Pino  2 da Ponte-H
-#define M1_A2_PIN 12 // Pino  7 da Ponte-H
+// Motor 1 pins
+#define M1_EN_PIN  5
+#define M1_A1_PIN 11
+#define M1_A2_PIN 12
 
-#define M2_EN_PIN  6 // Pino 9 da Ponte-H
-#define M2_A1_PIN 10 // Pino 10 da Ponte-H
-#define M2_A2_PIN  8 // Pino 15 da Ponte-H
+// Motor 2 pins
+#define M2_EN_PIN  6
+#define M2_A1_PIN 10
+#define M2_A2_PIN  8
 
-// Keyboard key codes (hex)
+// Encoder 1
+#define ENC1_PIN 3
+
+// Encoder 2
+#define ENC2_PIN 9
+
+// Ultrasonic 1 (using analog pins)
+#define US1_TRIG 14
+#define US1_ECHO 15
+
+// Ultrasonic 2 (using analog pins)
+#define US2_TRIG 16
+#define US2_ECHO 17
+
+// Ultrasonic 3 (using analog pins)
+#define US3_TRIG 18
+#define US3_ECHO 19
+
+// Keyboard key codes
 // http://www.theasciicode.com.ar/
-#define w_key 119
-#define a_key 97
-#define s_key 115
-#define d_key 100
-#define x_key 120
-#define c_key 99
-#define v_key 118
-#define q_key 113
-#define z_key 90
-#define space 32
-#define minus 45
-#define equal 61
+#define key_1 49
+#define key_2 50
+#define key_3 51
+#define key_4 52
+#define key_5 53
+#define key_6 54
+#define key_w 119
+#define key_a 97
+#define key_s 115
+#define key_d 100
+#define key_x 120
+#define key_c 99
+#define key_v 118
+#define key_q 113
+#define key_z 90
+#define key_space 32
+#define key_minus 45
+#define key_equal 61
 
-// Arrows (last command)
-#define arrow_up   65
-#define arrow_down 66
-#define arrow_left 68
-#define arrow_righ 67
+// Arrows (just last value of 3)
+#define key_arrow_up   65
+#define key_arrow_down 66
+#define key_arrow_left 68
+#define key_arrow_righ 67
 
 // Robot commands
-#define move_left_cmd     a_key
-#define move_forward_cmd  w_key
-#define move_right_cmd    d_key
-#define move_backward_cmd s_key
-#define break_cmd         space
-#define decr_speed_cmd    minus
-#define incr_speed_cmd    equal
-#define debug_cmd         x_key
-#define debug_toggle      z_key
-
-int serial_command = 0;
+#define cmd_move_left     key_a
+#define cmd_move_forward  key_w
+#define cmd_move_right    key_d
+#define cmd_move_backward key_s
+#define cmd_break         key_space
+#define cmd_decr_speed    key_minus
+#define cmd_incr_speed    key_equal
+#define cmd_read_us1      key_1
+#define cmd_read_us2      key_2
+#define cmd_read_us3      key_3
+#define cmd_read_enc1     key_4
+#define cmd_read_enc2     key_5
+#define cmd_verbosity     key_v
+#define cmd_debug         key_x
 
 // M1 initial conditions
 int m1_speed = 115;
@@ -54,8 +83,8 @@ int m2_speed = 115;
 bool m2_a1 = LOW;
 bool m2_a2 = LOW;
 
-// Verbosity mode (default verbose)
-int verbose = 1;
+int serial_command = 0;
+int verbosity = 1;
 
 void setup()
 {
@@ -69,6 +98,24 @@ void setup()
 	pinMode(M2_A1_PIN, OUTPUT);
 	pinMode(M2_A2_PIN, OUTPUT);
 
+	// // Configure Encoder 1
+	// pinMode(ENC1_PIN, INPUT);
+
+	// // Configure Encoder 2
+	// pinMode(ENC2_PIN, INPUT);
+
+	// // Configure Ultrasonic 1
+	// pinMode(US1_ECHO, INPUT);
+	// pinMode(US1_TRIG, OUTPUT);
+
+	// // Configure Ultrasonic 2
+	// pinMode(US2_ECHO, INPUT);
+	// pinMode(US2_TRIG, OUTPUT);
+
+	// // Configure Ultrasonic 3
+	// pinMode(US3_ECHO, INPUT);
+	// pinMode(US3_TRIG, OUTPUT);
+
 	// Initialization Motor 1 pins
 	analogWrite(M1_EN_PIN, m1_speed);
 	digitalWrite(M1_A1_PIN, m1_a1);
@@ -80,9 +127,11 @@ void setup()
 	digitalWrite(M2_A2_PIN, m2_a2);
 
 	// Serial configuration
-	Serial.begin(230400);
+	Serial.begin(115200);
 	Serial.println("[ARDUINO] Robot ready!");
-	Serial.println("[ARDUINO] Hit z key to toogle verbosity mode.");
+	Serial.println("[ARDUINO] Hit 'v' key to change verbosity level.");
+	Serial.print("[ARDUINO] Initial verbosity: ");
+	Serial.println(verbosity);
 }
 
 void loop()
@@ -91,71 +140,111 @@ void loop()
 	while(Serial.available() > 0)
 	{
 		serial_command = Serial.read();
-		Serial.print("[ARDUINO] Received command: ");
-		Serial.println(serial_command , DEC);
+
+		if(verbosity >= 2) {
+			Serial.print("[ARDUINO] Received command: ");
+			Serial.println(serial_command, DEC);
+		}
 
 		// Decodifica os valores
 		switch(serial_command)
 		{
-
-			case arrow_up:
-			case move_forward_cmd: {
-				move_forward(verbose);
+			case key_arrow_up:
+			case cmd_move_forward: {
+				move_forward();
 				break;
 			}
 
-			case arrow_down:
-			case move_backward_cmd: {
-				move_backward(verbose);
+			case key_arrow_down:
+			case cmd_move_backward: {
+				move_backward();
 				break;
 			}
 
-			case arrow_left:
-			case move_left_cmd: {
-				turn_left(verbose);
+			case key_arrow_left:
+			case cmd_move_left: {
+				turn_left();
 				break;
 			}
 
-			case arrow_righ:
-			case move_right_cmd: {
-				turn_right(verbose);
+			case key_arrow_righ:
+			case cmd_move_right: {
+				turn_right();
 				break;
 			}
 
-			case break_cmd: {
-				stop(verbose);
+			case cmd_break: {
+				break_action();
 				break;
 			}
 
-			case decr_speed_cmd: {
-				speed_down(verbose);
+			case cmd_decr_speed: {
+				speed_down();
 				break;
 			}
 
-			case incr_speed_cmd: {
-				speed_up(verbose);
+			case cmd_incr_speed: {
+				speed_up();
 				break;
 			}
 
-			case debug_cmd: {
-				debug_motors(verbose);
+			case cmd_read_us1: {
+				read_ultrasonic(1);
 				break;
 			}
 
-
-			case debug_toggle: {
-				if(verbose) verbose = 0;
-				else verbose = 1;
+			case cmd_read_us2: {
+				read_ultrasonic(2);
 				break;
+			}
+
+			case cmd_read_us3: {
+				read_ultrasonic(3);
+				break;
+			}
+
+			case cmd_read_enc1: {
+				read_encoder(1);
+				break;
+			}
+
+			case cmd_read_enc2: {
+				read_encoder(2);
+				break;
+			}
+
+			case cmd_debug: {
+				read_motors();
+				read_ultrasonic(1);
+				Serial.println("");
+				read_ultrasonic(2);
+				Serial.println("");
+				read_ultrasonic(3);
+				Serial.println("");
+				read_encoder(1);
+				Serial.println("");
+				read_encoder(2);
+				break;
+			}
+
+			case cmd_verbosity: {
+				toggle_verbosity();
+				break;
+			}
+
+			default:
+			{
+				Serial.println("[ARDUINO] Command not Implemented");
 			}
 		}
 	}
 }
 
-void move_forward(int verbose)
+void move_forward()
 {
-	if(verbose)
+	if(verbosity >= 1) {
 		Serial.println("[ARDUINO] Moving forward...");
+	}
 
 	m1_a1 = HIGH;
 	m1_a2 = LOW;
@@ -168,10 +257,11 @@ void move_forward(int verbose)
 	digitalWrite(M2_A2_PIN, m2_a2);
 }
 
-void move_backward(int verbose)
+void move_backward()
 {
-	if(verbose)
+	if(verbosity >= 1) {
 		Serial.println("[ARDUINO] Moving backward...");
+	}
 
 	m1_a1 = LOW;
 	m1_a2 = HIGH;
@@ -184,10 +274,11 @@ void move_backward(int verbose)
 	digitalWrite(M2_A2_PIN, m2_a2);
 }
 
-void turn_left(int verbose)
+void turn_left()
 {
-	if(verbose)
+	if(verbosity >= 1) {
 		Serial.println("[ARDUINO] Turing left");
+	}
 
 	m1_a1 = HIGH;
 	m1_a2 = LOW;
@@ -200,10 +291,11 @@ void turn_left(int verbose)
 	digitalWrite(M2_A2_PIN, m2_a2);
 }
 
-void turn_right(int verbose)
+void turn_right()
 {
-	if(verbose)
+	if(verbosity >= 1) {
 		Serial.println("[ARDUINO] Turning right");
+	}
 
 	m1_a1 = LOW;
 	m1_a2 = LOW;
@@ -216,10 +308,11 @@ void turn_right(int verbose)
 	digitalWrite(M2_A2_PIN, m2_a2);
 }
 
-void stop(int verbose)
+void break_action()
 {
-	if(verbose)
+	if(verbosity >= 1) {
 		Serial.println("[ARDUINO] Breaking");
+	}
 
 	m1_a1 = LOW;
 	m1_a2 = LOW;
@@ -232,7 +325,7 @@ void stop(int verbose)
 	digitalWrite(M2_A2_PIN, m2_a2);
 }
 
-void speed_up(int verbose)
+void speed_up()
 {
 	if(m1_speed < 255)
 	{
@@ -240,7 +333,7 @@ void speed_up(int verbose)
 		m2_speed = m2_speed + 1;
 		if(m1_speed < 0) m1_speed = 0;
 		if(m2_speed < 0) m2_speed = 0;
-		if(verbose) {
+		if(verbosity >= 1) {
 			Serial.print("[ARDUINO] Increasing speed: ");
 			Serial.print(((float)m1_speed * 100) / 255);
 			Serial.print("% [");
@@ -252,7 +345,7 @@ void speed_up(int verbose)
 	}
 }
 
-void speed_down(int verbose)
+void speed_down()
 {
 	if(m1_speed > 0)
 	{
@@ -260,7 +353,7 @@ void speed_down(int verbose)
 		m2_speed = m2_speed - 1;
 		if(m1_speed < 0) m1_speed = 0;
 		if(m2_speed < 0) m2_speed = 0;
-		if(verbose) {
+		if(verbosity >= 1) {
 			Serial.print("[ARDUINO] Decreasing speed: ");
 			Serial.print(((float) m1_speed * 100) / 255);
 			Serial.print("% [");
@@ -272,10 +365,32 @@ void speed_down(int verbose)
 	}
 }
 
-// Show motor pin states
-void debug_motors(int verbose)
+
+void read_ultrasonic(int ultrasonic_id)
 {
-	if(verbose)	{
+	if(verbosity >= 1) {
+		Serial.print("[ARDUINO] Reading ultrasonic ");
+		Serial.println(ultrasonic_id);
+	}
+
+	Serial.println("[ARDUINO] TODO: Implement this function!!");
+}
+
+void read_encoder(int encoder_id)
+{
+	if(verbosity >= 1) {
+		Serial.print("[ARDUINO] Reading encode ");
+		Serial.println(encoder_id);
+	}
+
+	Serial.println("[ARDUINO] TODO: Implement this function!!");
+}
+
+
+// Show motor pin states
+void read_motors()
+{
+	if(verbosity >= 1) {
 		Serial.println("[ARDUINO] Debug");
 		Serial.println("");
 	}
@@ -294,4 +409,26 @@ void debug_motors(int verbose)
 	Serial.print("[ARDUINO] M2 A2: ");
 	Serial.println(m2_a2);
 	Serial.println("");
+}
+
+void toggle_verbosity()
+{
+	// Rotate verbosity level
+	switch(verbosity) {
+		case 0: {
+			verbosity = 1;
+			break;
+		}
+		case 1: {
+			verbosity = 2;
+			break;
+		}
+		case 2: {
+			verbosity = 0;
+			break;
+		}
+	}
+
+	Serial.print("[ARDUINO] Verbosity level: ");
+	Serial.println(verbosity);
 }
